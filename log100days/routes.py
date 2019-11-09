@@ -1,9 +1,14 @@
-from quart import render_template, redirect
+# -*- coding: utf-8 -*-
+
+"""Defines possible URLs and their functions."""
+
+# Thrid-Party Imports
+import aiohttp
 from markdown2 import markdown
 from markupsafe import escape
-# import requests
-import aiohttp
+from quart import render_template
 
+# First-Party Imports
 from log100days import app
 
 
@@ -11,12 +16,13 @@ from log100days import app
 @app.route("/home")
 @app.route("/index")
 def index():
+    """Render index template."""
     return render_template("home.html.j2")
 
 
 def safely_render_markdown(raw):
     """
-    Render raw markdown securely into HTML
+    Render raw markdown securely into HTML.
 
     HTML contained in the input string is sanitized.
 
@@ -32,13 +38,18 @@ def safely_render_markdown(raw):
 
 @app.route("/<string:markdownfile>.md")
 async def render_log_repo_markdown_file_in_site(markdownfile):
-    file_url = ("https://raw.githubusercontent.com/tbrlpld/"
-                "100-days-of-code/master/" + markdownfile + ".md")
+    """Render markdown file from journal repo as save HTML in base template."""
+    file_url = (
+        "https://raw.githubusercontent.com/tbrlpld/"
+        + "100-days-of-code/master/"
+        + markdownfile
+        + ".md"
+    )
     async with aiohttp.ClientSession() as session:
         async with session.get(file_url) as response:
-            content = await response.text(encoding="utf8")
+            markdown_content = await response.text(encoding="utf8")
 
-    rendered_content = safely_render_markdown(content)
+    rendered_content = safely_render_markdown(markdown_content)
     return await render_template(
         "rendered_content.html.j2",
         rendered_content=rendered_content,
