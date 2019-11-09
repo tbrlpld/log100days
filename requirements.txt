@@ -1,4 +1,4 @@
 quart
 markdown2
-requests
+aiohttp
 python-dotenv

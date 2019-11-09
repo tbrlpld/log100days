@@ -1,7 +1,8 @@
 from quart import render_template, redirect
 from markdown2 import markdown
 from markupsafe import escape
-import requests
+# import requests
+import aiohttp
 
 from log100days import app
 
@@ -30,13 +31,16 @@ def safely_render_markdown(raw):
 
 
 @app.route("/<string:markdownfile>.md")
-def render_log_repo_markdown_file_in_site(markdownfile):
-    file_URL = ("https://raw.githubusercontent.com/tbrlpld/"
+async def render_log_repo_markdown_file_in_site(markdownfile):
+    file_url = ("https://raw.githubusercontent.com/tbrlpld/"
                 "100-days-of-code/master/" + markdownfile + ".md")
-    request = requests.get(file_URL)
-    rendered_content = safely_render_markdown(request.content.decode("utf8"))
-    return render_template(
+    async with aiohttp.ClientSession() as session:
+        async with session.get(file_url) as response:
+            content = await response.text(encoding="utf8")
+
+    rendered_content = safely_render_markdown(content)
+    return await render_template(
         "rendered_content.html.j2",
         rendered_content=rendered_content,
-        pagetitle=markdownfile.title()
+        pagetitle=markdownfile.title(),
     )
