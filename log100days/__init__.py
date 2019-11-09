@@ -1,6 +1,6 @@
-from flask import Flask
+from quart import Quart
 
-app = Flask(__name__, instance_relative_config=True)
+app = Quart(__name__, instance_relative_config=True)
 app.config.from_mapping(
     SECRET_KEY="dev"
 )

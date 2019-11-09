@@ -1,4 +1,4 @@
-flask
+quart
 markdown2
 requests
 python-dotenv

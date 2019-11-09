@@ -1,4 +1,4 @@
-from flask import render_template, redirect
+from quart import render_template, redirect
 from markdown2 import markdown
 from markupsafe import escape
 import requests
@@ -40,21 +40,3 @@ def render_log_repo_markdown_file_in_site(markdownfile):
         rendered_content=rendered_content,
         pagetitle=markdownfile.title()
     )
-
-
-# @app.route("/rules")
-# @app.route("/rules.md")
-# def rules():
-#     request = requests.get("https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/rules.md")
-#     rendered_content = safely_render_markdown(request.content.decode("utf8"))
-#     return render_template(
-#         "rendered_content.html.j2", rendered_content=rendered_content)
-
-
-# @app.route("/log")
-# @app.route("/log.md")
-# def log():
-#     request = requests.get("https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/log.md")
-#     rendered_content = safely_render_markdown(request.content.decode("utf8"))
-#     return render_template(
-#         "rendered_content.html.j2", rendered_content=rendered_content)
