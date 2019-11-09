@@ -1,0 +1,4 @@
+include .flaskenv
+graft log100days/templates
+graft log100days/static
+global-exclude *.pyc

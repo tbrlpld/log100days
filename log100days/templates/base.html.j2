@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- load MUI -->
+	<link href="//cdn.muicss.com/mui-0.10.0/css/mui.min.css" rel="stylesheet" type="text/css" />
+	<script src="//cdn.muicss.com/mui-0.10.0/js/mui.min.js"></script>
+
+
+	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/static/style.css">
+	<title>{% if self.pagetitle %}{{ self.pagetitle() }} | {% endif %}Tibor's #100DaysOfCode Journal</title>
+</head>
+<body class="mui-container">
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui-col-lg-10 mui-col-lg-offset-1 mui-col-xl-8 mui-col-xl-offset-2">
+			<header class="mui-row">
+				<nav class="mui-col-xs-12">
+					<ul class="mui-list--inline mui--appbar-height mui--appbar-line-height mui-tabs__bar mui-tabs__bar--justified">
+						<li class="mui--align-middle"><a href="/home">Home</a></li>
+						<li class="mui--align-middle"><a href="/log.md">Log</a></li>
+						<li class="mui--align-middle"><a href="/rules.md">Rules</a></li>
+						<li class="mui--align-middle"><a href="/FAQ.md">FAQ</a></li>
+					</ul>
+				</nav>
+			</header>
+			<div class="mui-row">
+				<article class="mui-col-xs-12">
+					{% block content %}{% endblock %}
+				</article>
+			</div>
+			<footer class="mui-row" style="margin-bottom: 20px;">
+				{# Only for some space in the bottom #}
+			</footer>
+		</div>
+	</div>
+</body>
+</html>
