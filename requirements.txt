@@ -2,3 +2,5 @@ quart
 markdown2
 aiohttp
 python-dotenv
+wheel
+

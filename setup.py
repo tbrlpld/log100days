@@ -8,7 +8,8 @@ def get_requirements():
 
 setup(
     name="log100days",
-    version="1.0.0",
+    version="1.1.0",
+    description="Quart app to display my Markdown 100-days-log as HTML",
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
