@@ -2,7 +2,7 @@
 
 """Defines possible URLs and their functions."""
 
-# Thrid-Party Imports
+# Third-Party Imports
 import aiohttp
 from markdown2 import markdown
 from markupsafe import escape
