@@ -12,14 +12,6 @@ from quart import render_template
 from log100days import app
 
 
-@app.route("/")
-@app.route("/home")
-@app.route("/index")
-def index():
-    """Render index template."""
-    return render_template("home.html.j2")
-
-
 def safely_render_markdown(raw):
     """
     Render raw markdown securely into HTML.
@@ -55,3 +47,11 @@ async def render_log_repo_markdown_file_in_site(markdownfile):
         rendered_content=rendered_content,
         pagetitle=markdownfile.title(),
     )
+
+
+@app.route("/")
+@app.route("/home")
+@app.route("/index")
+async def index():
+    """Render index template."""
+    return await render_log_repo_markdown_file_in_site("README")
