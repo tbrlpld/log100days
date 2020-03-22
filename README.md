@@ -8,7 +8,7 @@ Quart is an async-enabled version of Flask.
 So far, this repo has not been turned into a package that you can install from PyPi (via pip).
 Therefore, as a first step in any case is you need to clone the repository to your machine (local or server).
 
-Depending on your usecase, follow the steps in the Development or Deployment section.
+Depending on your usecase, follow the steps in the [Development](#development) or [Deployment](#deployment) section.
 
 ## Development
 
@@ -16,6 +16,9 @@ Install the app in editable mode.
 ```sh
 $ python -m pip install -e .
 ```
+
+Then in the repo, create a `/instance` folder and place a `/config.py` inside.
+Add the configuration variables as seen in the [Deployment](#deployment) section to this file.
 
 You can run the app with Hypercorn.
 Hypercorn is an ASGI (the asynchronous pendant to WSGI) server and is automatically installed with Quart.
@@ -67,7 +70,7 @@ $ nano config.py
 With nano, add your config settings.
 ```python
 SECRET_KEY = b"something-secret"
-LOG_REPO = https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/
+MARKDOWN_LOG_URL = https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/
 ```
 
 That's it.
