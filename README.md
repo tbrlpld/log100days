@@ -1,10 +1,18 @@
 # Log100Days
 
 This is a small Quart app to render a #100DayOfCode markdown journal as a HTML page.
-
 Quart is an async-enabled version of Flask.
 
-To run the app, use Hypercorn. It comes with Quart.
+## Development
+
+Install the app in editable mode.
+```sh
+$ python -m pip install -e .
+```
+
+You can run the app with Hypercorn.
+Hypercorn is an ASGI (the asynchronous pendant to WSGI) server and is automatically installed with Quart.
+
 ```sh
 $ hypercorn log100days:app
 ```
