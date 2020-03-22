@@ -1,6 +1,6 @@
 # Log100Days
 
-This is a small Quart app to render my #100DayOfCode journal repo from Github.
+This is a small Quart app to render a #100DayOfCode markdown journal as a HTML page.
 
 Quart is an async-enabled version of Flask.
 
