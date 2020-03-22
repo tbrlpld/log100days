@@ -1,2 +1,0 @@
-FLASK_APP=runlog.py
-FLASK_ENV=development
