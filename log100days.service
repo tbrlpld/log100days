@@ -1,0 +1,13 @@
+[Unit]
+Description=Hypercorn instance to serve log100days
+After=network.target
+
+[Service]
+User=tibor
+Group=tibor
+WorkingDirectory=/srv/www/log100days.lpld.io
+Environment="PATH=/srv/www/log100days.lpld.io/venv/bin"
+ExecStart=/srv/www/log100days.lpld.io/venv/bin/hypercorn --workers 3 --bind 127.0.0.1:5000 log100days:app
+
+[Install]
+WantedBy=multi-user.target
