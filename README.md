@@ -9,6 +9,13 @@ To run the app, use Hypercorn. It comes with Quart.
 $ hypercorn log100days:app
 ```
 
+During development it is probably easier to use the quart development server.
+```sh
+$ export QUART_APP=log100days:app
+$ export QUART_DEBUG=1
+$ quart run
+```
+
 
 ## Deployment
 
