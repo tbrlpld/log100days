@@ -2,6 +2,8 @@
 
 """Defines possible URLs and their functions."""
 
+from pprint import pprint
+
 # Third-Party Imports
 import aiohttp
 from markdown2 import markdown
@@ -32,8 +34,7 @@ def safely_render_markdown(raw):
 async def render_log_repo_markdown_file_in_site(markdownfile):
     """Render markdown file from journal repo as save HTML in base template."""
     file_url = (
-        "https://raw.githubusercontent.com/tbrlpld/"
-        + "100-days-of-code/master/"
+        app.config["MARKDOWN_LOG_URL"]
         + markdownfile
         + ".md"
     )
