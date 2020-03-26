@@ -15,26 +15,24 @@
 </head>
 <body>
 	<div class="container">
-		<div>
-			<header>
-				<nav>
-					<ul>
-						<li><a href="/home">Home</a></li>
-						<li><a href="/log.md">Log</a></li>
-						<li><a href="/rules.md">Rules</a></li>
-						<li><a href="/FAQ.md">FAQ</a></li>
-					</ul>
-				</nav>
-			</header>
-			<div>
-				<article>
-					{% block content %}{% endblock %}
-				</article>
-			</div>
-			<footer>
-				{# Only for some space in the bottom #}
-			</footer>
-		</div>
+		<header>
+			<nav>
+				<ul>
+					<li><a href="/home">Home</a></li>
+					<li><a href="/log.md">Log</a></li>
+					<li><a href="/rules.md">Rules</a></li>
+					<li><a href="/FAQ.md">FAQ</a></li>
+				</ul>
+			</nav>
+		</header>
+		<main>
+			<article>
+				{% block content %}{% endblock %}
+			</article>
+		</main>
+		<footer>
+			{# Only for some space in the bottom #}
+		</footer>
 	</div>
 </body>
 </html>
