@@ -25,6 +25,10 @@ html {
   background-color: hsl(0, 0%, 100%);
 }
 
+::selection {
+  background-color: hsla(80, 100%, 50%, 50%);
+}
+
 h1,
 h2,
 h3,
