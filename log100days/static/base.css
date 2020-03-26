@@ -83,7 +83,8 @@ a {
 }
 
 a:hover {
-  border-bottom: 2px hsl(210, 100%, 55%) solid;
+  /*border-bottom: 2px hsl(210, 100%, 55%) solid;*/
+  text-decoration: underline
 }
 
 a:visited {
@@ -103,4 +104,9 @@ ol > li {
 
 ul > li {
   list-style: disc;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid hsl(0, 0%, 90%);
 }
