@@ -28,7 +28,6 @@
   }
 }
 
-
 .nav a,
 .nav .nav-item {
   color: hsl(0, 0%, 20%);
@@ -80,6 +79,11 @@
   text-align: center;
 }
 
+@media (max-width: 320px) {
+  .nav .nav-toggle {
+    display: block;
+  }
+}
 
 .nav .nav-toggle.closed:before,
 .nav .nav-toggle.open:before {
@@ -94,13 +98,6 @@
 .nav .nav-toggle.open:before {
   content: "\2715";
 }
-
-@media (max-width: 320px) {
-  .nav .nav-toggle {
-    display: block;
-  }
-}
-
 
 .nav-container ~ main {
   padding-top: 80px;
