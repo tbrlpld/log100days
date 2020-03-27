@@ -107,6 +107,7 @@ ul > li {
 }
 
 hr {
+  margin: 50px 0;
   border: none;
   border-top: 1px solid hsl(0, 0%, 90%);
 }
