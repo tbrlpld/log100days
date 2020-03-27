@@ -1,0 +1,109 @@
+.nav-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  padding: 0 20px;
+
+  background-color: hsl(0, 0%, 100%);
+}
+
+.nav {
+  width: 100%;
+  height: 80px;
+  max-width: 800px;
+  margin: 0 auto;
+  border-bottom: 1px solid hsl(0, 0%, 90%);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 320px) {
+  .nav {
+    flex-direction: column;
+    height: auto;
+  }
+}
+
+
+.nav a,
+.nav .nav-item {
+  color: hsl(0, 0%, 20%);
+}
+
+.nav .nav-item {
+  margin-left: 5px;
+  min-height: 42px;
+  min-width: 42px;
+  line-height: 42px;
+
+  text-align: center;
+}
+
+.nav .nav-item:first-of-type {
+  margin-left: 0;
+
+  text-align: right;
+}
+
+.nav .nav-item:last-of-type {
+  text-align: right;
+}
+
+.nav .nav-item.visible {
+  display: block;
+}
+
+@media (max-width: 320px) {
+  .nav .nav-item {
+    display: none;
+  }
+
+  .nav .nav-item,
+  .nav .nav-item:first-of-type,
+  .nav .nav-item:last-of-type {
+    margin: 0;
+    margin-top: 10px;
+
+    text-align: center;
+  }  
+}
+
+.nav .nav-toggle {
+  display: none;
+  height: 80px;
+  line-height: 80px;
+
+  text-align: center;
+}
+
+
+.nav .nav-toggle.closed:before,
+.nav .nav-toggle.open:before {
+  font-size: 20px;
+  cursor: pointer;
+}
+  
+.nav .nav-toggle.closed:before {
+  content: "\2630";
+}
+
+.nav .nav-toggle.open:before {
+  content: "\2715";
+}
+
+@media (max-width: 320px) {
+  .nav .nav-toggle {
+    display: block;
+  }
+}
+
+
+.nav-container ~ main {
+  padding-top: 80px;
+}
+
+

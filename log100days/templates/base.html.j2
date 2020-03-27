@@ -10,17 +10,20 @@
 
 
 	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville&display=swap" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/static/style.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<script src="/static/js/app.js"></script>
 	<title>{% if self.pagetitle %}{{ self.pagetitle() }} | {% endif %}Tibor's #100DaysOfCode Journal</title>
 </head>
 <body>
 	<div class="container">
 		<header class="nav-container">
-			<nav class="nav">
+			<nav id="nav" class="nav">
 					<a class="nav-item" href="/home">Home</a>
+					<a class="nav-item" href="/README.md">About</a>
 					<a class="nav-item" href="/log.md">Log</a>
 					<a class="nav-item" href="/rules.md">Rules</a>
 					<a class="nav-item" href="/FAQ.md">FAQ</a>
+					<div id="nav-toggle" class="nav-toggle closed" onclick="toggleNav()"></div>
 			</nav>
 		</header>
 		<main>
