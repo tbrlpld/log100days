@@ -77,8 +77,8 @@ If this setting is not defined, the menu entry is omitted.
 
 ```python
 SECRET_KEY = b"something-secret"
-MARKDOWN_LOG_URL = https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/
-HOME_URL = https://lpld.io
+MARKDOWN_LOG_URL = "https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/"
+HOME_URL = "https://lpld.io"
 ```
 
 That's it.
