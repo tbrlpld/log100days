@@ -68,9 +68,17 @@ $ nano config.py
 ```
 
 With nano, add your config settings.
+The `MARKDOWN_LOG_URL` settings defines the repository where the markdown files can be found.
+It does not have to be a GitHub repo.
+Any URL which is extended with the Markdown filenames works.
+
+The `HOME_URL` defines which site the "Home" link in the navigation menu should point to.
+If this setting is not defined, the menu entry is omitted.
+
 ```python
 SECRET_KEY = b"something-secret"
 MARKDOWN_LOG_URL = https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/
+HOME_URL = https://lpld.io
 ```
 
 That's it.

@@ -47,6 +47,7 @@ async def render_log_repo_markdown_file_in_site(markdownfile):
         "rendered_content.html.j2",
         rendered_content=rendered_content,
         pagetitle=markdownfile.title(),
+        home_url=app.config.get("HOME_URL", None),
     )
 
 
