@@ -1,2 +1,0 @@
-QUART_APP=log100days:app
-QUART_DEBUG=1
