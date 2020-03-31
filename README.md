@@ -88,7 +88,7 @@ During development you are going to want to update the source code often and see
 To achieve this with a containerized app, you want to override the source directory in the container with the one on your machine (the docker host).
 
 ```sh
-docker run -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days:latest
+$ docker run -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days:latest
 ```
 
 In the above example, the app directory in the container (`/usr/src/app`) is overridden by mounting the source directory on the host (`/Users/tibor/1-Projects/log100days`) to its location.
@@ -104,12 +104,23 @@ To see the changes during without having the stop and start the server, or conta
 The development server in the container can be started with the `--entrypoint` command line flag.
 
 ```sh
-docker run  --entrypoint quart -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days run -h 0 -p 5000
+$ docker run  --entrypoint quart -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days run -h 0 -p 5000
 ```
 
 Note that the executable (`quart`) and the arguments (in this case `run`) are not written directly after one another.
 
+Since this is quite the line, you might want to save this somehow.
+This is where [`docker-compose`](https://docs.docker.com/compose/compose-file/) comes in.
 
+There already is a `docker-compose.yml` file in the repo for production use.
+But you can go ahead an create your own file with settings for local development.
+See [`docker-compose document`](https://docs.docker.com/compose/compose-file/) for the syntax and available options.
+
+You can run `docker-compose` with a different file than the default by using the `-f` flag.
+
+```sh
+$ docker-compose -f docker-compose-dev.yml up
+```
 
 Then in the repo, create a `/instance` folder and place a `/config.py` inside.
 Add the configuration variables as seen in the [Deployment](#deployment) section to this file.

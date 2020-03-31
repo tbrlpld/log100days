@@ -1,0 +1,9 @@
+# For development purposes only.
+version: "3"
+services:
+    base:
+        build: .
+        image: tbrlpld/log100days
+        ports: 
+            - "127.0.0.1:5000:5000"
+        entrypoint: quart run -h 0 -p 5000
