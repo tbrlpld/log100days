@@ -42,7 +42,7 @@ def get_setting_from_env(
 
 app = Quart(__name__, instance_relative_config=True)
 app.config.from_mapping(
-    SECRET_KEY="dev",
+    SECRET_KEY=get_setting_from_env("SECRET_KEY"),
     MARKDOWN_LOG_URL=get_setting_from_env("MARKDOWN_LOG_URL"),
     HOME_URL=get_setting_from_env("HOME_URL"),
 )
