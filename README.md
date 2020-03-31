@@ -8,31 +8,8 @@ Quart is an async-enabled version of Flask.
 So far, this repo has not been turned into a package that you can install from PyPi (via pip).
 Therefore, as a first step in any case is you need to clone the repository to your machine (local or server).
 
-Depending on your usecase, follow the steps in the [Development](#development) or [Deployment](#deployment) section.
+Depending on your use case, follow the steps in the [Development](#development) or [Deployment](#deployment) section.
 
-## Development
-
-Install the app in editable mode.
-```sh
-$ python -m pip install -e .
-```
-
-Then in the repo, create a `/instance` folder and place a `/config.py` inside.
-Add the configuration variables as seen in the [Deployment](#deployment) section to this file.
-
-You can run the app with Hypercorn.
-Hypercorn is an ASGI (the asynchronous pendant to WSGI) server and is automatically installed with Quart.
-
-```sh
-$ hypercorn log100days:app
-```
-
-During development it is probably easier to use the quart development server.
-```sh
-$ export QUART_APP=log100days:app
-$ export QUART_DEBUG=1
-$ quart run
-```
 
 ## Deployment
 
@@ -84,6 +61,7 @@ HOME_URL = "https://lpld.io"
 That's it.
 
 ### Run
+
 When running it in production, use the following.
 ```sh
 $ hypercorn --workers 3 --bind 127.0.0.1:5000 log100days:app
@@ -100,3 +78,52 @@ $ systemctl status log100days
 ```
 
 The filename in `/etc/systemd/system/` without the `.service` extension defines the name of the service.
+
+
+## Development
+
+This app utilizes Docker containers for development and deployment.
+
+During development you are going to want to update the source code often and see the changes on the page.
+To achieve this with a containerized app, you want to override the source directory in the container with the one on your machine (the docker host).
+
+```sh
+docker run -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days:latest
+```
+
+In the above example, the app directory in the container (`/usr/src/app`) is overridden by mounting the source directory on the host (`/Users/tibor/1-Projects/log100days`) to its location.
+
+Now you can change the source code locally and the the changes are immediately available in the container.
+
+You might not see the changes populate through to the app in the browser.
+This is because, by default, the container is running the production server.
+The production loads the app once on start up.
+Further changes do no go through.
+
+To see the changes during without having the stop and start the server, or container, you can run the development server.
+The development server in the container can be started with the `--entrypoint` command line flag.
+
+```sh
+docker run  --entrypoint quart -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days run -h 0 -p 5000
+```
+
+Note that the executable (`quart`) and the arguments (in this case `run`) are not written directly after one another.
+
+
+
+Then in the repo, create a `/instance` folder and place a `/config.py` inside.
+Add the configuration variables as seen in the [Deployment](#deployment) section to this file.
+
+You can run the app with Hypercorn.
+Hypercorn is an ASGI (the asynchronous pendant to WSGI) server and is automatically installed with Quart.
+
+```sh
+$ hypercorn log100days:app
+```
+
+During development it is probably easier to use the quart development server.
+```sh
+$ export QUART_APP=log100days:app
+$ export QUART_DEBUG=1
+$ quart run
+```
