@@ -108,6 +108,8 @@ $ docker run  --entrypoint quart -v /Users/tibor/1-Projects/log100days:/usr/src/
 ```
 
 Note that the executable (`quart`) and the arguments (in this case `run`) are not written directly after one another.
+Be sure to also configure the development server to accept connections from other hosts than localhost.
+Only accepting connections from localhost would mean only accepting from inside the container.
 
 Since this is quite the line, you might want to save this somehow.
 This is where [`docker-compose`](https://docs.docker.com/compose/compose-file/) comes in.
@@ -122,15 +124,48 @@ You can run `docker-compose` with a different file than the default by using the
 $ docker-compose -f docker-compose-dev.yml up
 ```
 
-Then in the repo, create a `/instance` folder and place a `/config.py` inside.
-Add the configuration variables as seen in the [Deployment](#deployment) section to this file.
+### Configuration
 
-You can run the app with Hypercorn.
-Hypercorn is an ASGI (the asynchronous pendant to WSGI) server and is automatically installed with Quart.
+To enable configuration of the app running in the server, we are using environment variables.
+The advantage of file based configuration is that environment variables can be created in the
+container in different ways.
 
-```sh
-$ hypercorn log100days:app
+You can [pass environment variables to the container via the `docker-compose` file](https://docs.docker.com/compose/compose-file/#environment),
+or directly [to the `docker run` command](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file).
+Instead of creating each environment variable separately, you can also make use of [environment files](https://docs.docker.com/compose/compose-file/#environment#env_file) in either of these cases.
+
+To make the environment variables easy to reuse, I use the environment file approach.
+This can be done by creating a `.env` file with the following content:
 ```
+SECRET_KEY=this-needs-to-be-something-safe
+MARKDOWN_LOG_URL=https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/
+HOME_URL=https://example.com
+```
+
+Make sure to use a safe value for the `SECRET_KEY` environment variable and **do not commit it to version control**.
+
+Now the use of the environment file needs to be passed to docker.
+To do so, just add the `env_file` key to the `docker-compose.yml`.
+```yml
+        ...
+        env_file:
+          - .env
+        ...
+```
+
+**Alternative Configuration**
+
+The more Flask typical way of configuring through a `config.py` file in the "instance" folder is still possible.
+The values defined in the `config.py` will override what is defined in the environment variables.
+
+Since the configuration file is a Python file, use the appropriate syntax to define the values.
+See the Flask documentation on [more information on how to use these configuration files](https://flask.palletsprojects.com/en/1.1.x/config/#configuring-from-files).
+
+Copy the `config.py` file to `/usr/src/app/instance` folder on the container.
+This can also be achieved by mounting an appropriate volume.
+
+
+### Development Configuration
 
 During development it is probably easier to use the quart development server.
 ```sh
