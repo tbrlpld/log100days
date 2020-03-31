@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from quart import Quart
 from dotenv import load_dotenv, find_dotenv
@@ -8,24 +9,28 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(".quartenv"))
 
 
-def get_setting_from_env(envvar_name: str, silent: bool = False) -> str:
+def get_setting_from_env(
+    envvar_name: str,
+    silent: bool = False,
+) -> Optional[str]:
     """
     Load an environment variable and return it's value.
 
     Parameters:
-        envvar_name (String): Name of the environment variable to be loaded.
-        silent (Bool): Boolean to control if a missing environment variable
+        envvar_name (str): Name of the environment variable to be loaded.
+        silent (bool): Boolean to control if a missing environment variable
             should pass silently or if an exceptions should be raised.
             Default: False.
 
     Returns:
-        str: String value from the environment variable.
+        Optional[str]: String value from the environment variable. If variable
+            does not exist and silent is `True`, this will be `None`.
 
     Raises:
         KeyError: When a requested variable is not defined, this error is
             raised with a helpful message.
-    """
 
+    """
     varval = os.getenv(envvar_name, default=None)
     if varval is None and not silent:
         raise KeyError(
