@@ -3,6 +3,7 @@ services:
     base:
         build: .
         image: tbrlpld/log100days
+        restart: always
         ports: 
             - "127.0.0.1:5000:5000"
         command: hypercorn --workers 3 --bind 0:5000 log100days:app
