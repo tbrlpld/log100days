@@ -3,71 +3,62 @@
 This is a small Quart app to render a #100DayOfCode markdown journal as a HTML page.
 Quart is an async-enabled version of Flask.
 
+
 ## Usage
 
-So far, this repo has not been turned into a package that you can install from PyPi (via pip).
-Therefore, as a first step in any case is you need to clone the repository to your machine (local or server).
+This app is designed to be pointed at the raw files of #100DayOfCode markdown journal repository.
+You can clone/fork [@kallaway's original journal repo](https://github.com/kallaway/100-days-of-code) to start your log.
 
-Depending on your usecase, follow the steps in the [Development](#development) or [Deployment](#deployment) section.
+To find the URL for the raw files click one of the files and then the "Raw" button.
+This will give you a URL like this: `https://raw.githubusercontent.com/kallaway/100-days-of-code/master/README.md`
 
-## Development
+You only need the part until the filename: `https://raw.githubusercontent.com/kallaway/100-days-of-code/master/`
 
-Install the app in editable mode.
+The app will generate a HTML based on the content of the Markdown files in the repo.
+You can see a [live implementation on my website](https://log100days.lpld.io).
+
+## Requirements
+
+Requires a host (or local machine) with [Docker](https://docs.docker.com/install/) installed.
+
+## Installation
+
+If you have `docker` installed, you don't really need to install anything.
+All you need is to pull the Docker image.
 ```sh
-$ python -m pip install -e .
+$ docker pull tbrlpld/log100days
 ```
 
-Then in the repo, create a `/instance` folder and place a `/config.py` inside.
-Add the configuration variables as seen in the [Deployment](#deployment) section to this file.
+Depending on your OS and setup, you might have to run the docker with `sudo`.
 
-You can run the app with Hypercorn.
-Hypercorn is an ASGI (the asynchronous pendant to WSGI) server and is automatically installed with Quart.
 
+## Configuration
+
+If you try to run the app container with out configuring the app first, you will get an error message.
 ```sh
-$ hypercorn log100days:app
+$ docker run tbrlpld/log100days
+...
+KeyError: 'The environment variable SECRET_KEY is missing. Be sure to configure it and try again.'
 ```
 
-During development it is probably easier to use the quart development server.
-```sh
-$ export QUART_APP=log100days:app
-$ export QUART_DEBUG=1
-$ quart run
+To enable configuration of the app running in the container, we are using environment variables.
+The advantage over file based configuration is that environment variables can be created in the
+container in different ways.
+
+You can [pass environment variables to the container via the `docker-compose` file](https://docs.docker.com/compose/compose-file/#environment),
+or directly [to the `docker run` command](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file).
+Instead of creating each environment variable separately, you can also make use of [environment files](https://docs.docker.com/compose/compose-file/#environment#env_file) in either of these cases.
+
+To make the environment variables easy to reuse, we use the environment file approach.
+This can be done by creating a `.env` file with the following content:
+```
+SECRET_KEY=this-needs-to-be-something-safe
+MARKDOWN_LOG_URL=https://raw.githubusercontent.com/kallaway/100-days-of-code/master/
+HOME_URL=https://example.com
 ```
 
-## Deployment
+Make sure to use a safe value for the `SECRET_KEY` environment variable and **do not commit it to version control**.
 
-*For more information of how to deploy Flask/Quart apps, see the [Flask tutorial section on deployment](https://flask.palletsprojects.com/en/1.1.x/tutorial/deploy/).*
-
-### Build
-Build the wheel for distribution on your development machine.
-```sh
-$ python setup.py bdist_wheel
-```
-
-### Install
-Copy the resulting `.whl` file from the `/dist` directory to the server (e.g. with scp).
-On the server, install the wheel in a virtual environment.
-*The directories for the installation are only examples. You only need to make sure your paths are consistent.*
-```sh
-$ cd /srv/www/<appname>
-$ python -m venv venv
-$ /srv/www/<appname/venv/bin/python -m pip install <filename>.whl
-```
-This should install the app and all it's dependencies in the virtual environment.
-
-The next step is to configure the app for your usecase.
-This app is configured with the idea of a config file in the [Flask instance folder](https://flask.palletsprojects.com/en/1.1.x/config/#instance-folders).
-If not configured otherwise, you should find the instance folder in the virtual environment folder (e.g. `/srv/www/<appname>/venv/var/<appname>-instance/`).
-Change into that folder and create a `config.py` in which you define your Markdown log repo.
-Be sure to use the URL of the raw markdown files!
-**Do not provide a filename.**
-
-```shell
-$ cd /srv/www/<appname>/venv/var/<appname>-instance/
-$ nano config.py
-```
-
-With nano, add your config settings.
 The `MARKDOWN_LOG_URL` settings defines the repository where the markdown files can be found.
 It does not have to be a GitHub repo.
 Any URL which is extended with the Markdown filenames works.
@@ -75,28 +66,129 @@ Any URL which is extended with the Markdown filenames works.
 The `HOME_URL` defines which site the "Home" link in the navigation menu should point to.
 If this setting is not defined, the menu entry is omitted.
 
-```python
-SECRET_KEY = b"something-secret"
-MARKDOWN_LOG_URL = "https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/"
-HOME_URL = "https://lpld.io"
+Now the use of the environment file needs to be passed to docker.
+To do so, just add the `env_file` key to the `docker-compose.yml`.
+```yml
+        ...
+        env_file:
+          - .env
+        ...
 ```
 
-That's it.
+**Alternative Configuration**
 
-### Run
-When running it in production, use the following.
+The more Flask typical way of configuring through a `config.py` file in the "instance" folder is still possible.
+The values defined in the `config.py` will override what is defined in the environment variables.
+
+Since the configuration file is a Python file, use the appropriate syntax to define the values.
+See the Flask documentation on [more information on how to use these configuration files](https://flask.palletsprojects.com/en/1.1.x/config/#configuring-from-files).
+
+Copy the `config.py` file to the `/usr/src/app/instance` folder on the container.
+This can be achieved by [mounting a volume](https://docs.docker.com/compose/compose-file/#volumes) at the appropriate location.
+
+## Run the App
+
+With the configuration file in place, you can run the app like so:
 ```sh
-$ hypercorn --workers 3 --bind 127.0.0.1:5000 log100days:app
+$ docker run -d --env-file .env -p 127.0.0.1:5000:5000 tbrlpld/log100days
 ```
 
-This is better done as a service, so that it runs in the background and automatically starts with the server.
-To create a service on a Ubuntu server copy the `log100days.service` file to `/etc/systemd/system/log100days.service`.
-Once this file is created, you can manage the service with `systemctl`.
+To document this command and simplify how to start the app, you can use a `docker-compose.yml` file.
+Just like the [`docker-compose.yml` file](./docker-compose.yml) here in this repo.
+
+This simplifies the start up command to the following, when you are in the working directory of the `docker-compose.yml` file.
+```sh
+$ docker-compose up -d
+```
+
+To stop the service, run the following in the directory with the `docker-compose.yml` file.
+```
+$ docker-compose stop
+```
+
+*Attention* The `docker-compose.yml` file in this repo makes the container only available from the host.
+This is, because I think this is a good security practice.
+If you do not define the host do be only localhost, then Docker will adjust your IP tables and let outside traffic through to the container.
+
+To achieve outside access to the app while running it only for the localhost, you can use a [reverse proxy like NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/).
+An example site NGINX config is in the repo.
+This file only needs to be copied/linked to `/etc/nginx/sites-enabled` to enable a basic proxy forwarding from a running NGINX instance to the locally available container.
+
+
+## Development
+
+### Configure and Run the App in Development
+
+This app utilizes Docker containers for development and deployment.
+
+During development you are going to want to update the source code often and see the changes on the page.
+To achieve this with a containerized app, you want to override the source directory in the container with the one on your machine (the docker host).
 
 ```sh
-$ systemctl enable log100days
-$ systemctl start log100days
-$ systemctl status log100days
+$ docker run -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days:latest
 ```
 
-The filename in `/etc/systemd/system/` without the `.service` extension defines the name of the service.
+In the above example, the app directory in the container (`/usr/src/app`) is overridden by mounting the source directory on the host (e.g. `/Users/tibor/1-Projects/log100days`) to its location.
+
+Now you can change the source code locally and the the changes are immediately available in the container.
+
+You might not see the changes populate through to the app in the browser.
+This is because, by default, the container is running the production server.
+The production loads the app once on start up.
+Further changes do no go through.
+
+To see the changes during without having the stop and start the server, or container, you can run the development server.
+The development server in the container can be started with the `--entrypoint` command line flag.
+
+```sh
+$ docker run  --entrypoint quart -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days run -h 0 -p 5000
+```
+
+Note that the executable (`quart`) and the arguments (in this case `run`) are not written directly after one another.
+Be sure to also configure the `quart` development server to accept connections from other hosts than localhost.
+Only accepting connections from localhost would mean only accepting from inside the container.
+
+The `quart` development server also requires the environment variables `QUART_APP` and `QUART_DEBUG` to be present.
+For this app and development, set `QUART_APP=log100days:app` and `QUART_DEBUG=1`.
+These environment variables can be added to the environment file `.env` used for configuration of the app (see the [Configuration section](#configuration) for more information).
+Use the `--env-flag` to pass the environment variables from the environment file to the container.
+
+```sh
+$ docker run  --entrypoint quart --env-file .env -v /Users/tibor/1-Projects/log100days:/usr/src/app -p 127.0.0.1:5000:5000 tbrlpld/log100days run -h 0 -p 5000
+```
+
+Since this is quite the line, you might want to save this somehow.
+This is where [`docker-compose`](https://docs.docker.com/compose/compose-file/) comes in.
+
+There already is a `docker-compose.yml` file in the repo for production use.
+But you can go ahead an create your own file with settings for local development.
+See [`docker-compose document`](https://docs.docker.com/compose/compose-file/) for the syntax and available options.
+
+You can run `docker-compose` with a different file than the default (`docker-compose.yml`) by using the `-f` flag.
+
+```sh
+$ docker-compose -f docker-compose-dev.yml up
+```
+
+### Build and Distribute
+
+Run the following command to build the latest image version using the production settings.
+```sh
+$ docker-compose build
+...
+Successfully tagged tbrlpld/log100days:latest
+```
+
+Then tag this image with a version.
+Make sure this is a new unused version number.
+```sh
+$ docker tag tbrlpld/log100days:latest tbrlpld/log100days:0.1
+```
+
+Push all the latest build images to DockerHub.
+```sh
+$ docker push tbrlpld/log100days
+```
+
+Builds can also be automated on [DockerHub](https://docs.docker.com/docker-hub/builds/) by following a certain branch on GitHub.
+
