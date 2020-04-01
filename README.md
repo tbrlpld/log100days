@@ -111,6 +111,8 @@ This is, because I think this is a good security practice.
 If you do not define the host do be only localhost, then Docker will adjust your IP tables and let outside traffic through to the container.
 
 To achieve outside access to the app while running it only for the localhost, you can use a [reverse proxy like NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/).
+An example site NGINX config is in the repo.
+This file only needs to be copied/linked to `/etc/nginx/sites-enabled` to enable a basic proxy forwarding from a running NGINX instance to the locally available container.
 
 
 ## Development
