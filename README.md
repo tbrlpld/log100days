@@ -3,16 +3,46 @@
 This is a small Quart app to render a #100DayOfCode markdown journal as a HTML page.
 Quart is an async-enabled version of Flask.
 
+
 ## Usage
 
-This app utilizes Docker containers for development and deployment to production.
+This app is designed to be pointed at the raw files of #100DayOfCode markdown journal repository.
+You can clone/fork [@kallaway's original journal repo](https://github.com/kallaway/100-days-of-code) to start your log.
+
+To find the URL for the raw files click one of the files and then the "Raw" button.
+This will give you a URL like this: `https://raw.githubusercontent.com/kallaway/100-days-of-code/master/README.md`
+
+You only need the part until the filename: `https://raw.githubusercontent.com/kallaway/100-days-of-code/master/`
+
+The app will generate a HTML based on the content of the Markdown files in the repo.
+You can see a [live implementation on my website](https://log100days.lpld.io).
+
+## Requirements
+
+Requires a host (or local machine) with [Docker](https://docs.docker.com/install/) installed.
+
+## Installation
+
+If you have `docker` installed, you don't really need to install anything.
+All you need is to pull the Docker image.
+```sh
+$ docker pull tbrlpld/log100days
+```
+
+Depending on your OS and setup, you might have to run the docker with `sudo`.
 
 
+## Configuration
 
-### Configuration
+If you try to run the app container with out configuring the app first, you will get an error message.
+```sh
+$ docker run tbrlpld/log100days
+...
+KeyError: 'The environment variable SECRET_KEY is missing. Be sure to configure it and try again.'
+```
 
 To enable configuration of the app running in the container, we are using environment variables.
-The advantage of file based configuration is that environment variables can be created in the
+The advantage over file based configuration is that environment variables can be created in the
 container in different ways.
 
 You can [pass environment variables to the container via the `docker-compose` file](https://docs.docker.com/compose/compose-file/#environment),
@@ -23,7 +53,7 @@ To make the environment variables easy to reuse, we use the environment file app
 This can be done by creating a `.env` file with the following content:
 ```
 SECRET_KEY=this-needs-to-be-something-safe
-MARKDOWN_LOG_URL=https://raw.githubusercontent.com/tbrlpld/100-days-of-code/master/
+MARKDOWN_LOG_URL=https://raw.githubusercontent.com/kallaway/100-days-of-code/master/
 HOME_URL=https://example.com
 ```
 
@@ -55,6 +85,32 @@ See the Flask documentation on [more information on how to use these configurati
 
 Copy the `config.py` file to the `/usr/src/app/instance` folder on the container.
 This can be achieved by [mounting a volume](https://docs.docker.com/compose/compose-file/#volumes) at the appropriate location.
+
+## Run the App
+
+With the configuration file in place, you can run the app like so:
+```sh
+$ docker run -d --env-file .env -p 127.0.0.1:5000:5000 tbrlpld/log100days
+```
+
+To document this command and simplify how to start the app, you can use a `docker-compose.yml` file.
+Just like the [`docker-compose.yml` file](./docker-compose.yml) here in this repo.
+
+This simplifies the start up command to the following, when you are in the working directory of the `docker-compose.yml` file.
+```sh
+$ docker-compose up -d
+```
+
+To stop the service, run the following in the directory with the `docker-compose.yml` file.
+```
+$ docker-compose stop
+```
+
+*Attention* The `docker-compose.yml` file in this repo makes the container only available from the host.
+This is, because I think this is a good security practice.
+If you do not define the host do be only localhost, then Docker will adjust your IP tables and let outside traffic through to the container.
+
+To achieve outside access to the app while running it only for the localhost, you can use a [reverse proxy like NGINX](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/).
 
 
 ## Development
