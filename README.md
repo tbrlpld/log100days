@@ -1,8 +1,10 @@
 # Log100Days
 
-This is a small Quart app to render a #100DayOfCode markdown journal as a HTML page.
+This is a small Quart app to render a #100DayOfCode markdown log as a HTML page.
 Quart is an async-enabled version of Flask.
 
+I have also created a [Gatsby site with the same functionality](https://github.com/tbrlpld/log100days-gatsby),
+because it is overkill to do the conversion from markdown to HTML on every request for content that is only updated once a day.
 
 ## Usage
 
